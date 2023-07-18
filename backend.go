@@ -371,14 +371,8 @@ func (b *versionedKVBackend) config(ctx context.Context, s logical.Storage) (*Co
 // getVersionKey uses the salt to generate the version key for a specific
 // version of a key.
 func (b *versionedKVBackend) getVersionKey(ctx context.Context, key string, version uint64, s logical.Storage) (string, error) {
-	salt, err := b.Salt(ctx, s)
-	if err != nil {
-		return "", err
-	}
+	return path.Join(b.storagePrefix, versionPrefix, key, fmt.Sprint(version)), nil
 
-	salted := salt.SaltID(fmt.Sprintf("%s|%d", key, version))
-
-	return path.Join(b.storagePrefix, versionPrefix, salted[0:3], salted[3:]), nil
 }
 
 // getKeyMetadata returns the metadata object for the provided key, if no object
